@@ -1,0 +1,59 @@
+Generate Rows Dynamically in Power BI Using DAX:
+
+Query: In Power BI, I need a DAX query that checks if a column contains a transaction count of 3. If so, it should generate 3 new rows, each with a sequential number from 1 to 3 in an additional column.
+
+Solution: When working with Power BI, you may come across situations where you need to generate multiple rows from a single row based on a Transaction Count column. For example, if a transaction count is 3, we need to create 3 new rows, each labeled from 1 to 3 in a separate column.
+
+This can be achieved using DAX in Power BI by leveraging GENERATESERIES and CROSSJOIN functions.
+
+In this guide, I’ll explain step-by-step how to dynamically create rows in Power BI using DAX with a simple example.
+
+Understanding the Requirement
+
+Let’s assume we have the following table named Transactions:
+
+ID	TransactionCount
+A	3
+B	2
+
+Our goal is to generate multiple rows based on the TransactionCount column, with an additional column (RowNumber) showing numbers from 1 to TransactionCount.
+
+Expected Output Table:
+
+GeneratedID	ID	RowNumber
+A-01	A	1
+A-02	A	2
+A-03	A	3
+B-01	B	1
+B-02	B	2
+
+Solution: Creating a Calculated Table Using DAX
+
+To achieve this, we will use a calculated table in Power BI.
+
+DAX Code for Row Generation
+GeneratedTable = 
+VAR BaseTable = 
+ADDCOLUMNS(
+GENERATE( 
+Transactions, 
+SELECTCOLUMNS(
+GENERATESERIES(1, Transactions[TransactionCount], 1), 
+"RowNumber", [Value]
+)
+),
+"GeneratedID", [ID] & "-" & FORMAT([RowNumber], "00")
+)
+RETURN BaseTable
+
+
+
+
+
+Here Transactions is Power BI table and TransactionCount is the column which you need to generate the rows as per this value.
+
+Summarize:
+
+By using DAX functions like GENERATESERIES, CROSSJOIN, and ADDCOLUMNS, we can dynamically generate rows based on a column value in Power BI.
+
+This technique is powerful when working with transaction-based data and allows better insights into row-level details.
